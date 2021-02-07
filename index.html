@@ -38,6 +38,7 @@
     </main>
 
     <script>
+        let cachedData;
         function searchMeals() {
             const searchedMealIngredient = document.getElementById("searched-input-id").value;
             loadData(searchedMealIngredient);
@@ -45,7 +46,6 @@
 
         function loadData(searchedItem) {
             const API_link = "https://www.themealdb.com/api/json/v1/1/search.php?s=" + searchedItem;
-            console.log('1', API_link);
 
             fetch(API_link)
                 .then(response => response.json())
@@ -54,8 +54,15 @@
                     data.meals.map((singleMeal) => {
                         const mealName = singleMeal.strMeal;
                         const mealThumb = singleMeal.strMealThumb;
+
+                        // cachedData = {mealName: mealName, };
+
                         const mainSectionContainer = document.getElementById('search-result-section-id');
                         const responsiveDivContainer = createFoodItemCards(mealName, mealThumb);
+                        responsiveDivContainer.addEventListener('click', (event) => {
+                            createFoodDetailsCard(mealName);
+                        }
+                        );
                         mainSectionContainer.appendChild(responsiveDivContainer);
                     }
                     );
@@ -65,7 +72,10 @@
                 });
         }
 
+        function createFoodDetailsCard(mealName) {
+            const mainSectionContainer = document.getElementById('search-result-section-id');
 
+        }
 
         function createFoodItemCards(mealName, mealPicture) {
             const responsiveDivContainer = document.createElement("div");
@@ -87,6 +97,7 @@
             galleryDivContainer.appendChild(anchorElement);
             galleryDivContainer.appendChild(descDivContainer);
             responsiveDivContainer.appendChild(galleryDivContainer);
+
             return responsiveDivContainer;
         }
     </script>
