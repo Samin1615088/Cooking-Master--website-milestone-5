@@ -104,7 +104,7 @@ function createFoodDetailsCard(measurementList, ingredientList, singleMeal) {
     foodNameHeader.innerHTML = singleMeal.strMeal;
     foodNameHeader.style.textAlign = "center";
 
-    const header = document.createElement('h2');
+    const header = document.createElement('h3');
     header.innerHTML = "INGREDIENTS"
     header.style.marginLeft = "5px";
 
