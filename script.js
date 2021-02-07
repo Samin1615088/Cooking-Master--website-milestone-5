@@ -1,81 +1,152 @@
-const food = {
-    idMeal: "52771",
-    strArea: "Italian",
-    strCategory: "Vegetarian",
-    strDrinkAlternate: null,
-    strIngredient1: "penne rigate",
-    strIngredient2: "olive oil",
-    strIngredient3: "garlic",
-    strIngredient4: "chopped tomatoes",
-    strIngredient5: "red chile flakes",
-    strIngredient6: "italian seasoning",
-    strIngredient7: "basil",
-    strIngredient8: "Parmigiano-Reggiano",
-    strIngredient9: "",
-    strIngredient10: "",
-    strIngredient11: "dsfsadf",
-    strIngredient12: "",
-    strIngredient13: "",
-    strIngredient14: "asdfasdf",
-    strIngredient15: "",
-    strIngredient16: null,
-    strIngredient17: null,
-    strIngredient18: null,
-    strIngredient19: null,
-    strIngredient20: null,
-    strInstructions: "Bring a large pot of water to a boil. Add kosher salt to the boiling water, then add the pasta. Cook according to the package instructions, about 9 minutes.",
-    strMeal: "Spicy Arrabiata Penne",
-    strMealThumb: "https://www.themealdb.com/images/media/meals/ustsqw1468250014.jpg",
-    strMeasure1: "1 pound",
-    strMeasure2: "1/4 cup",
-    strMeasure3: "3 cloves",
-    strMeasure4: "1 tin ",
-    strMeasure5: "1/2 teaspoon",
-    strMeasure6: "1/2 teaspoon",
-    strMeasure7: "6 leaves",
-    strMeasure8: "spinkling",
-    strMeasure9: "",
-    strMeasure10: "",
-    strMeasure11: "asdfsadf",
-    strMeasure12: "",
-    strMeasure13: "",
-    strMeasure14: "asdfasdf",
-    strMeasure15: "",
-    strMeasure16: null,
-    strMeasure17: null,
-    strMeasure18: null,
-    strMeasure19: null,
-    strMeasure20: null,
-    strSource: null,
-    strTags: "Pasta,Curry",
-    strYoutube: "https://www.youtube.com/watch?v=1IszT_guI08"
-}
 
-console.log(food.strMeal);
-
-let ingredientList = [];
-let measurementList = [];
-for (const element of Object.keys(food)) {
-    let property = food[element];
-
-    if ((property !== "") && (property !== null)) {
-        if (isEqual(element, "strMeasure")) {
-            measurementList.push(element);
-        }
-        else if (isEqual(element, "strIngredient")) {
-            ingredientList.push(element);
-        }
-    }
-}
-
-console.log(measurementList);
-console.log(ingredientList);
-
-function isEqual(givenString, referenceString) {
-    if (givenString.slice(0, givenString.length - 1) === referenceString ||
-        givenString.slice(0, givenString.length - 2) === referenceString) {
-        return true;
+let cachedData = [];
+let flag = true;
+function searchMeals() {
+    const searchedMealIngredient = document.getElementById("searched-input-id").value;
+    if (searchedMealIngredient.length > 0) {
+        loadData(searchedMealIngredient);
     } else {
-        return false;
+        alert("Write something to search");
     }
+}
+
+function loadData(searchedItem) {
+    const API_link = "https://www.themealdb.com/api/json/v1/1/search.php?s=" + searchedItem;
+    let details = document.getElementById('show-details-section-id');
+    let searched = document.getElementById('search-result-section-id');
+
+
+
+    fetch(API_link)
+        .then(response => response.json())
+        .then(data => {
+            console.log(data);
+            data.meals.map((singleMeal) => {
+                const mealName = singleMeal.strMeal;
+                const mealThumb = singleMeal.strMealThumb;
+
+                cachedData.push(singleMeal);
+
+
+                const mainSectionContainer = document.getElementById('search-result-section-id');
+                const responsiveDivContainer = createFoodItemCards(mealName, mealThumb);
+                responsiveDivContainer.addEventListener('click', (event) => {
+                    const parent = event.target.closest('.responsive');//----------------------
+                    const foodName = parent.querySelector('.desc').innerHTML;
+                    cachedData.forEach(element => {
+                        if (element.strMeal === foodName) {
+                            let [measurementList, ingredientList, mealImage] = findMealIngredients(element);
+                            let responsiveDivContainer = createFoodDetailsCard(measurementList, ingredientList, singleMeal);
+                            document.getElementById('show-details-section-id').appendChild(responsiveDivContainer);
+                        }
+                    });
+                }
+                );
+                mainSectionContainer.appendChild(responsiveDivContainer);
+            }
+            );
+        })
+        .catch(error => {
+            alert(`Something went Wrong !!\n\nError Message: ${error.message}`);
+        });
+}
+
+function findMealIngredients(singleMeal) {
+    let ingredientList = [];
+    let measurementList = [];
+    for (const element of Object.keys(singleMeal)) {
+        let property = singleMeal[element];
+
+        if ((property !== "") && (property !== null)) {
+            if (isEqual(element, "strMeasure")) {
+                measurementList.push(element);
+            }
+            else if (isEqual(element, "strIngredient")) {
+                ingredientList.push(element);
+            }
+        }
+    }
+
+    console.log(measurementList);
+    console.log(ingredientList);
+
+    function isEqual(givenString, referenceString) {
+        if (givenString.slice(0, givenString.length - 1) === referenceString ||
+            givenString.slice(0, givenString.length - 2) === referenceString) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+    return [measurementList, ingredientList, singleMeal];
+}
+
+function createFoodDetailsCard(measurementList, ingredientList, singleMeal) {
+    const mainSectionContainer = document.getElementById('search-result-section-id');
+
+    const responsiveDivContainer = document.createElement("div");
+    responsiveDivContainer.className = "nonresponsive";
+
+    const galleryDivContainer = document.createElement("div");
+    galleryDivContainer.className = "gallery";
+
+
+
+    const imageElement = document.createElement("img");
+    imageElement.src = singleMeal.strMealThumb;
+
+    const paragraphContainer = document.createElement("div");
+    paragraphContainer.style.marginLeft = "10px";
+    const foodNameHeader = document.createElement('h1');
+    foodNameHeader.innerHTML = singleMeal.strMeal;
+    foodNameHeader.style.textAlign = "center";
+
+    const header = document.createElement('h2');
+    header.innerHTML = "INGREDIENTS"
+    header.style.marginLeft = "5px";
+
+    const ul = document.createElement('ul');
+
+    for (let i = 0; i < 5; i++) {
+        description = singleMeal[measurementList[i]] + " " + singleMeal[ingredientList[i]];
+        if (description.length > 0) {
+            const li = document.createElement('li');
+            li.innerHTML = description;
+            ul.appendChild(li);
+        }
+    }
+    galleryDivContainer.appendChild(imageElement);
+    galleryDivContainer.appendChild(foodNameHeader);
+    galleryDivContainer.appendChild(document.createElement('hr'))
+    galleryDivContainer.appendChild(header);
+    galleryDivContainer.appendChild(document.createElement('hr'))
+    galleryDivContainer.appendChild(ul);
+    responsiveDivContainer.appendChild(galleryDivContainer);
+
+    return responsiveDivContainer;
+
+}
+
+function createFoodItemCards(mealName, mealPicture) {
+    const responsiveDivContainer = document.createElement("div");
+    responsiveDivContainer.className = "responsive";
+
+    const galleryDivContainer = document.createElement("div");
+    galleryDivContainer.className = "gallery";
+
+    const anchorElement = document.createElement("a");
+    anchorElement.href = "#";
+    const imageElement = document.createElement("img");
+    imageElement.src = mealPicture;
+
+    const descDivContainer = document.createElement("div");
+    descDivContainer.className = "desc";
+    descDivContainer.innerHTML = mealName;
+
+    anchorElement.appendChild(imageElement);
+    galleryDivContainer.appendChild(anchorElement);
+    galleryDivContainer.appendChild(descDivContainer);
+    responsiveDivContainer.appendChild(galleryDivContainer);
+
+    return responsiveDivContainer;
 }

@@ -16,14 +16,11 @@
 <body>
     <main>
         <section id="search-section-id">
-            <!-- <input id="searched-input-id" type="text" placeholder="search item by meal ingredients" value="">
-        <button id="search-btn-id" type="submit" onclick="searchMeals();">Seach</button> -->
-
             <div class="container h-100">
                 <div class="d-flex justify-content-center h-100">
                     <div class="searchbar">
                         <input class="search_input" id="searched-input-id" type="text"
-                            placeholder="search item by meal ingredients" value="">
+                            placeholder="SEARCH MEALS BY NAME" value="">
 
                         <a id="search-btn-id" onclick="searchMeals();" href="#" class="search_icon"><i
                                 class="fas fa-search"></i></a>
@@ -32,75 +29,14 @@
             </div>
 
         </section>
+        <section id="show-details-section-id">
+        </section>
         <br>
         <section id="search-result-section-id">
         </section>
     </main>
 
-    <script>
-        let cachedData;
-        function searchMeals() {
-            const searchedMealIngredient = document.getElementById("searched-input-id").value;
-            loadData(searchedMealIngredient);
-        }
-
-        function loadData(searchedItem) {
-            const API_link = "https://www.themealdb.com/api/json/v1/1/search.php?s=" + searchedItem;
-
-            fetch(API_link)
-                .then(response => response.json())
-                .then(data => {
-                    console.log(data);
-                    data.meals.map((singleMeal) => {
-                        const mealName = singleMeal.strMeal;
-                        const mealThumb = singleMeal.strMealThumb;
-
-                        // cachedData = {mealName: mealName, };
-
-                        const mainSectionContainer = document.getElementById('search-result-section-id');
-                        const responsiveDivContainer = createFoodItemCards(mealName, mealThumb);
-                        responsiveDivContainer.addEventListener('click', (event) => {
-                            createFoodDetailsCard(mealName);
-                        }
-                        );
-                        mainSectionContainer.appendChild(responsiveDivContainer);
-                    }
-                    );
-                })
-                .catch(error => {
-                    alert(`Something went Wrong !!\n\nError Message: ${error.message}`);
-                });
-        }
-
-        function createFoodDetailsCard(mealName) {
-            const mainSectionContainer = document.getElementById('search-result-section-id');
-
-        }
-
-        function createFoodItemCards(mealName, mealPicture) {
-            const responsiveDivContainer = document.createElement("div");
-            responsiveDivContainer.className = "responsive";
-
-            const galleryDivContainer = document.createElement("div");
-            galleryDivContainer.className = "gallery";
-
-            const anchorElement = document.createElement("a");
-            anchorElement.href = "#";
-            const imageElement = document.createElement("img");
-            imageElement.src = mealPicture;
-
-            const descDivContainer = document.createElement("div");
-            descDivContainer.className = "desc";
-            descDivContainer.innerHTML = mealName;
-
-            anchorElement.appendChild(imageElement);
-            galleryDivContainer.appendChild(anchorElement);
-            galleryDivContainer.appendChild(descDivContainer);
-            responsiveDivContainer.appendChild(galleryDivContainer);
-
-            return responsiveDivContainer;
-        }
-    </script>
+    <script src="script.js"></script>
 </body>
 
 </html>

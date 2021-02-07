@@ -72,6 +72,7 @@ div.gallery img {
 
 div.desc {
   padding: 15px;
+  background-color: #f8f8f8be;;
   text-align: center;
 }
 
@@ -79,6 +80,12 @@ div.desc {
   padding: 0 6px;
   margin-bottom: 30px;
   float: left;
+  width: 24.99999%;
+}
+
+.nonresponsive {
+  padding: 0 6px;
+  margin: 30px auto;
   width: 24.99999%;
 }
 
