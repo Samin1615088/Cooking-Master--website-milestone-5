@@ -14,24 +14,64 @@
 <body>
     <section id="search-section-id">
         <input id="searched-input-id" type="text" placeholder="search item by meal ingredients" value="">
-        <button id="search-btn-id" type="submit">Seach</button>
+        <button id="search-btn-id" type="submit" onclick="searchMeals();">Seach</button>
     </section>
     <br>
     <section id="search-result-section-id">
-        <div class="responsive">
-            <div class="gallery">
-                <a target="_blank" href="img_5terre.jpg">
-                    <img src="https://www.themealdb.com/images/media/meals/sbx7n71587673021.jpg" alt="Cinque Terre"
-                        width="600" height="400">
-                </a>
-                <div class="desc">Chick-Fil-A Sandwich</div>
-            </div>
-        </div>
-
     </section>
 
     <script>
+        function searchMeals() {
+            const searchedMealIngredient = document.getElementById("searched-input-id").value;
+            console.log(searchedMealIngredient);
+            //searchedMealIngredient = searchedMealIngredient.join("_");
+            console.log(searchedMealIngredient);
+            loadData(searchedMealIngredient);
+        }
 
+        function loadData(searchedItem) {
+            const API_link = "https://www.themealdb.com/api/json/v1/1/filter.php?i=" + searchedItem;
+
+            fetch(API_link)
+                .then(response => response.json())
+                .then(data => {
+                    console.log(data.meals.map((singleMeal) => {
+                        const mealName = singleMeal.strMeal;
+                        const mealThumb = singleMeal.strMealThumb;
+
+                        const mainSectionContainer = document.getElementById('search-result-section-id');
+
+                        mainSectionContainer.appendChild(createFoodItemCards(mealName, mealThumb));
+                    }))
+                });
+        }
+
+        function createFoodItemCards(mealName, mealPicture) {
+
+            const responsiveDivContainer = document.createElement("div");
+            responsiveDivContainer.className = "responsive";
+
+            const galleryDivContainer = document.createElement("div");
+            galleryDivContainer.className = "gallery";
+
+
+            console.log(responsiveDivContainer);
+
+            const anchorElement = document.createElement("a");
+            anchorElement.href = "#";
+            const imageElement = document.createElement("img");
+            imageElement.src = mealPicture;
+
+            const descDivContainer = document.createElement("div");
+            descDivContainer.className = "desc";
+            descDivContainer.innerHTML = mealName;
+
+            anchorElement.appendChild(imageElement);
+            galleryDivContainer.appendChild(anchorElement);
+            galleryDivContainer.appendChild(descDivContainer);
+            responsiveDivContainer.appendChild(galleryDivContainer);
+            return responsiveDivContainer;
+        }
     </script>
 </body>
 
