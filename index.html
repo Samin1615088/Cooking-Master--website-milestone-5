@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
+        integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css"
+        integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
+    <link rel="stylesheet" href="style.css">
+    <title>Cooking Master</title>
+</head>
+
+<body>
+    <main>
+        <section id="search-section-id">
+            <!-- <input id="searched-input-id" type="text" placeholder="search item by meal ingredients" value="">
+        <button id="search-btn-id" type="submit" onclick="searchMeals();">Seach</button> -->
+            <div class="container h-100">
+                <div class="d-flex justify-content-center h-100">
+                    <div class="searchbar">
+                        <input class="search_input" id="searched-input-id" type="text"
+                            placeholder="search item by meal ingredients" value="">
+
+                        <a id="search-btn-id" onclick="searchMeals();" href="#" class="search_icon"><i
+                                class="fas fa-search"></i></a>
+                    </div>
+                </div>
+            </div>
+
+        </section>
+        <br>
+        <section id="search-result-section-id">
+        </section>
+    </main>
+
+    <script>
+        function searchMeals() {
+            const searchedMealIngredient = document.getElementById("searched-input-id").value;
+            console.log(searchedMealIngredient);
+            //searchedMealIngredient = searchedMealIngredient.join("_");
+            console.log(searchedMealIngredient);
+            loadData(searchedMealIngredient);
+        }
+
+        function loadData(searchedItem) {
+            const API_link = "https://www.themealdb.com/api/json/v1/1/filter.php?i=" + searchedItem;
+
+            fetch(API_link)
+                .then(response => response.json())
+                .then(data => {
+                    console.log(data.meals.map((singleMeal) => {
+                        const mealName = singleMeal.strMeal;
+                        const mealThumb = singleMeal.strMealThumb;
+
+                        const mainSectionContainer = document.getElementById('search-result-section-id');
+
+                        mainSectionContainer.appendChild(createFoodItemCards(mealName, mealThumb));
+                    }))
+                });
+        }
+
+        function createFoodItemCards(mealName, mealPicture) {
+
+            const responsiveDivContainer = document.createElement("div");
+            responsiveDivContainer.className = "responsive";
+
+            const galleryDivContainer = document.createElement("div");
+            galleryDivContainer.className = "gallery";
+
+
+            console.log(responsiveDivContainer);
+
+            const anchorElement = document.createElement("a");
+            anchorElement.href = "#";
+            const imageElement = document.createElement("img");
+            imageElement.src = mealPicture;
+
+            const descDivContainer = document.createElement("div");
+            descDivContainer.className = "desc";
+            descDivContainer.innerHTML = mealName;
+
+            anchorElement.appendChild(imageElement);
+            galleryDivContainer.appendChild(anchorElement);
+            galleryDivContainer.appendChild(descDivContainer);
+            responsiveDivContainer.appendChild(galleryDivContainer);
+            return responsiveDivContainer;
+        }
+    </script>
+</body>
+
+</html>
