@@ -13,9 +13,9 @@ function searchMeals() {
 function loadData(searchedItem) {
     const API_link = "https://www.themealdb.com/api/json/v1/1/search.php?s=" + searchedItem;
     let details = document.getElementById('show-details-section-id');
-    let searched = document.getElementById('search-result-section-id');
-
-
+    deleteChild(details);
+    let search = document.getElementById('search-result-section-id');
+    deleteChild(search);
 
     fetch(API_link)
         .then(response => response.json())
@@ -50,6 +50,14 @@ function loadData(searchedItem) {
             alert(`Something went Wrong !!\n\nError Message: ${error.message}`);
         });
 }
+function deleteChild(parent) {
+    let child = parent.lastElementChild;
+    while (child) {
+        parent.removeChild(child);
+        child = parent.lastElementChild;
+    }
+}
+
 
 function findMealIngredients(singleMeal) {
     let ingredientList = [];
@@ -82,16 +90,11 @@ function findMealIngredients(singleMeal) {
 }
 
 function createFoodDetailsCard(measurementList, ingredientList, singleMeal) {
-    const mainSectionContainer = document.getElementById('search-result-section-id');
-
     const responsiveDivContainer = document.createElement("div");
     responsiveDivContainer.className = "nonresponsive";
 
     const galleryDivContainer = document.createElement("div");
     galleryDivContainer.className = "gallery";
-
-
-
     const imageElement = document.createElement("img");
     imageElement.src = singleMeal.strMealThumb;
 
@@ -130,7 +133,6 @@ function createFoodDetailsCard(measurementList, ingredientList, singleMeal) {
 function createFoodItemCards(mealName, mealPicture) {
     const responsiveDivContainer = document.createElement("div");
     responsiveDivContainer.className = "responsive";
-
     const galleryDivContainer = document.createElement("div");
     galleryDivContainer.className = "gallery";
 
